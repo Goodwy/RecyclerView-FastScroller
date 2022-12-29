@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
@@ -114,7 +115,7 @@ class RecyclerViewFastScroller @JvmOverloads constructor(context: Context, attrs
 
     // defaults to be used throughout this class. All these values can be overriden in the individual methods provided for the main class
     private object Defaults {
-        val popupDrawableInt: Int = R.drawable.custom_bg_primary
+        val popupDrawableInt: Int = R.drawable.popup_bg_primary
         val handleDrawableInt: Int = R.drawable.custom_bg_primary
         val handleHeight: Int = R.dimen.default_handle_height
         val handleWidth: Int = R.dimen.default_handle_width
@@ -314,6 +315,13 @@ class RecyclerViewFastScroller @JvmOverloads constructor(context: Context, attrs
                 loadDrawableFromAttributes(R.styleable.RecyclerViewFastScroller_popupDrawable)
             } else {
                 ContextCompat.getDrawable(context, Defaults.popupDrawableInt)
+            }
+
+            if (!attribs.hasValue(R.styleable.RecyclerViewFastScroller_popupDrawable)) {
+                popupTextView.minimumWidth = resources.getDimensionPixelSize(
+                    R.dimen.fs_popup_min_width)
+                popupTextView.minimumHeight = resources.getDimensionPixelSize(
+                    R.dimen.fs_popup_min_height)
             }
 
             // set default handleImageView drawable if not defined

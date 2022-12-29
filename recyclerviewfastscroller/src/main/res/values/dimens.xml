@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="corner_radius">24dp</dimen>
+    <dimen name="fs_corner_radius">16dp</dimen>
 
-    <dimen name="default_handle_width">26dp</dimen>
+    <dimen name="default_handle_width">20dp</dimen>
     <dimen name="default_handle_height">40dp</dimen>
     <dimen name="default_popup_padding">16dp</dimen>
 
     <dimen name="default_handle_right_padding">4dp</dimen>
     <dimen name="default_handle_left_padding">12dp</dimen>
+
+    <dimen name="fs_popup_min_width">64dp</dimen>
+    <dimen name="fs_popup_min_height">64dp</dimen>
+    <dimen name="fs_popup_padding_start">16dp</dimen>
+    <dimen name="fs_popup_padding_end">16dp</dimen>
 </resources>
