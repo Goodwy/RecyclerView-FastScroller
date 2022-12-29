@@ -14,5 +14,5 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/recycler_view_margin"
         android:layout_marginRight="@dimen/recycler_view_margin"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </com.qtalk.recyclerviewfastscroller.RecyclerViewFastScroller>
