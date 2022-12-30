@@ -318,15 +318,15 @@ class RecyclerViewFastScroller @JvmOverloads constructor(context: Context, attrs
             }
 
             if (!attribs.hasValue(R.styleable.RecyclerViewFastScroller_popupDrawable)) {
-                popupTextView.minimumWidth = resources.getDimensionPixelSize(
-                    R.dimen.fs_popup_min_width)
-                popupTextView.minimumHeight = resources.getDimensionPixelSize(
-                    R.dimen.fs_popup_min_height)
+                popupTextView.minimumWidth = resources.getDimensionPixelSize(R.dimen.fs_popup_min_width)
+                popupTextView.minimumHeight = resources.getDimensionPixelSize(R.dimen.fs_popup_min_height)
             }
+            //popupTextView.alpha = 0.6f
 
             // set default handleImageView drawable if not defined
             handleDrawable = (loadDrawableFromAttributes(R.styleable.RecyclerViewFastScroller_handleDrawable)
                 ?: ContextCompat.getDrawable(context, Defaults.handleDrawableInt))
+            handleDrawable!!.alpha = 153
 
             handleVisibilityDuration = attribs.getInt(
                 R.styleable.RecyclerViewFastScroller_handleVisibilityDuration,
