@@ -85,7 +85,7 @@ To get the callback from the fast scroller for different states, a listener can 
 * `supportSwipeToRefresh` - To support smooth scrolling for RecyclerViews nested within a `SwipeRefreshLayout`
 * `trackMarginStart` - Adds a start margin to the track of the fastscroller
 * `trackMarginEnd` - Adds a end margin to the track of the fastscroller
-* `handleVisibilityDuration` - Adds an option to specify the duration to hide the fastscroller handle, defaults to -1, which doesn't hide it
+* `handleVisibilityDuration` - Adds an option to specify the duration to hide the fastscroller handle, defaults to 2 seconds (value -1 = don't hide)
 * `handleHasFixedSize` - TODO - currently setting this to false doesn't do anything, as the size of the handle is independent of the item count
 * `fastScrollDirection` - TODO - currently the fast scroller only works in the `vertical` direction
 

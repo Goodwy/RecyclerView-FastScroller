@@ -126,7 +126,7 @@ class RecyclerViewFastScroller @JvmOverloads constructor(context: Context, attrs
         const val isFastScrollEnabled: Boolean = true
         const val animationDuration: Long = 100
         const val popupVisibilityDuration = 200L
-        const val handleVisibilityDuration: Int = 1000
+        const val handleVisibilityDuration: Int = 2000
         const val trackMargin: Int = 0
     }
 
