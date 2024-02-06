@@ -621,7 +621,7 @@ class RecyclerViewFastScroller @JvmOverloads constructor(context: Context, attrs
         }
 
         moveViewToRelativePositionWithBounds(handleImageView, offset)
-        moveViewToRelativePositionWithBounds(popupTextView, offset - popupLength)
+        moveViewToRelativePositionWithBounds(popupTextView, offset - popupLength + trackMarginStart)
     }
 
     /**
