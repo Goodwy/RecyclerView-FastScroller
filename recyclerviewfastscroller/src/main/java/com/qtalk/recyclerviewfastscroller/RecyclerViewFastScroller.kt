@@ -620,8 +620,11 @@ class RecyclerViewFastScroller @JvmOverloads constructor(context: Context, attrs
             }
         }
 
-        moveViewToRelativePositionWithBounds(handleImageView, offset)
-        moveViewToRelativePositionWithBounds(popupTextView, offset - popupLength + trackMarginStart)
+        // Correction: we guarantee that the offset does not exceed the boundaries.
+        val safeOffset = offset.coerceIn(0F, trackLength - handleLength)
+
+        moveViewToRelativePositionWithBounds(handleImageView, safeOffset)
+        moveViewToRelativePositionWithBounds(popupTextView, safeOffset - popupLength + trackMarginStart)
     }
 
     /**
@@ -724,45 +727,59 @@ class RecyclerViewFastScroller @JvmOverloads constructor(context: Context, attrs
      *@param relativeRawPos the relative raw position, calculated during [MotionEvent.ACTION_MOVE] or [MotionEvent.ACTION_DOWN]
      * */
     private fun RecyclerView.computePositionForOffsetAndScroll(relativeRawPos: Float): Int {
-        val layoutManager: RecyclerView.LayoutManager? = this.layoutManager
-        val recyclerViewItemCount = this.adapter?.itemCount ?: 0
+    val layoutManager: RecyclerView.LayoutManager? = this.layoutManager
+    val recyclerViewItemCount = this.adapter?.itemCount ?: 0
+    
+    if (recyclerViewItemCount == 0) return 0
 
-        val newOffset = relativeRawPos / (trackLength - handleLength)
-        return when (layoutManager) {
-            is LinearLayoutManager -> {
-                val totalVisibleItems = layoutManager.getTotalCompletelyVisibleItemCount()
-
-                if (totalVisibleItems == RecyclerView.NO_POSITION) {
-                    return RecyclerView.NO_POSITION
-                }
-
-                // the last item would have one less visible item, this is to offset it.
-                previousTotalVisibleItem = max(previousTotalVisibleItem, totalVisibleItems)
-                // check bounds and then set position
-                val position =
-                    if (layoutManager.reverseLayout) {
-                        min(
-                            recyclerViewItemCount,
-                            max(0, recyclerViewItemCount - (newOffset * (recyclerViewItemCount - totalVisibleItems)).roundToInt())
-                        )
-                    } else {
-                        min(
-                            recyclerViewItemCount,
-                            max(0, (newOffset * (recyclerViewItemCount - totalVisibleItems)).roundToInt())
-                        )
-                    }
-
-                val toScrollPosition = min((this.adapter?.itemCount ?: 0) - (previousTotalVisibleItem + 1), position)
-                safeScrollToPosition(toScrollPosition)
-                position
+    val newOffset = relativeRawPos / (trackLength - handleLength)
+    
+    return when (layoutManager) {
+        is LinearLayoutManager -> {
+            val totalVisibleItems = layoutManager.getTotalCompletelyVisibleItemCount()
+            
+            if (totalVisibleItems == RecyclerView.NO_POSITION) {
+                return 0
             }
-            else -> {
-                val position = (newOffset * recyclerViewItemCount).roundToInt()
-                safeScrollToPosition(position)
-                position
+            
+            // Correcting: obtaining the actual number of visible elements
+            val firstVisiblePos = layoutManager.findFirstVisibleItemPosition()
+            val lastVisiblePos = layoutManager.findLastVisibleItemPosition()
+            val actualVisibleItems = if (firstVisiblePos != RecyclerView.NO_POSITION && 
+                lastVisiblePos != RecyclerView.NO_POSITION) {
+                lastVisiblePos - firstVisiblePos + 1
+            } else {
+                totalVisibleItems
             }
+            
+            previousTotalVisibleItem = max(previousTotalVisibleItem, actualVisibleItems)
+            
+            // The maximum position to which you can scroll
+            // We only subtract fully visible elements.
+            val maxScrollPosition = recyclerViewItemCount - previousTotalVisibleItem
+            
+            val position = if (layoutManager.reverseLayout) {
+                // For reverse layout, scroll from the end.
+                val computedPos = recyclerViewItemCount - 1 - (newOffset * (recyclerViewItemCount - previousTotalVisibleItem)).roundToInt()
+                min(recyclerViewItemCount - 1, max(0, computedPos))
+            } else {
+                val computedPos = (newOffset * (recyclerViewItemCount - previousTotalVisibleItem)).roundToInt()
+                min(maxScrollPosition, max(0, computedPos))
+            }
+            
+            // Smooth scrolling, not instantaneous
+            smoothScrollToPosition(position)
+            
+            return position
+        }
+        else -> {
+            val position = (newOffset * recyclerViewItemCount).roundToInt()
+            val safePosition = min(recyclerViewItemCount - 1, max(0, position))
+            smoothScrollToPosition(safePosition)
+            return safePosition
         }
     }
+}
 
     /**
      * Update popup text or hide popup when the interface is not implemented
